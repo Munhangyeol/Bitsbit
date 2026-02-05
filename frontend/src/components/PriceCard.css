@@ -1,0 +1,181 @@
+/* 🎨 Minimal Price Card - White, Gray, Light Blue Only */
+.price-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .price-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+    border-color: var(--color-primary-light);
+  }
+}
+
+/* Header Section */
+.price-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.price-card-header h3 {
+  font-size: clamp(18px, 3vw, 20px);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.symbol {
+  font-size: clamp(12px, 2vw, 13px);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border-color-light);
+}
+
+/* Body Section */
+.price-card-body {
+  margin-bottom: var(--spacing-md);
+}
+
+.price {
+  font-size: clamp(28px, 5vw, 32px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.change {
+  font-size: clamp(14px, 2.5vw, 16px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
+}
+
+.change.positive {
+  background: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+}
+
+.change.negative {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.change.positive::before {
+  content: '▲';
+  font-size: 12px;
+}
+
+.change.negative::before {
+  content: '▼';
+  font-size: 12px;
+}
+
+/* Footer Section */
+.price-card-footer {
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-color-light);
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: clamp(12px, 2vw, 13px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.trend-up {
+  background: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-light);
+}
+
+.trend-down {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-color: var(--border-color-dark);
+}
+
+.trend-neutral {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  border-color: var(--border-color);
+}
+
+.trend:hover {
+  transform: scale(1.05);
+}
+
+.trend-up:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.trend-down:hover {
+  background: var(--border-color-dark);
+  color: var(--text-primary);
+}
+
+.trend-neutral:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .price-card {
+    padding: var(--spacing-sm);
+  }
+
+  .price {
+    font-size: 28px;
+  }
+
+  .change {
+    font-size: 15px;
+  }
+
+  .price-card-header h3 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .price {
+    font-size: 24px;
+  }
+
+  .change {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+
+  .symbol {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}

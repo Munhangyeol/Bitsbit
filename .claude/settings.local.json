@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash([ -f package.json ])",
+      "Bash(curl:*)",
+      "Bash(sqlite3:*)",
+      "Bash(npm start)",
+      "Bash(node -e:*)",
+      "Bash(python3:*)",
+      "Bash(pkill:*)",
+      "Bash(npm install:*)",
+      "Bash(for i in {1..10})",
+      "Bash(do echo \"요청 $i:\")",
+      "Bash(done)",
+      "Bash(for i in {1..5})",
+      "Bash(do curl -s \"http://localhost:5000/api/prices\")",
+      "Bash(echo:*)",
+      "Bash(git init:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+/* 🎨 News Page */
+.news-page {
+  padding-top: 70px;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}

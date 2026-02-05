@@ -1,0 +1,28 @@
+/* 🎨 Minimal Crypto Dashboard - White, Gray, Light Blue Only */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display',
+    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f8f9fa;
+  color: #212529;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Fira Code', 'Courier New',
+    monospace;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #495057;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+}
