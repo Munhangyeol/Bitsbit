@@ -49,6 +49,14 @@ function Navigation() {
               뉴스 피드
             </Link>
           </li>
+          <li>
+            <Link
+              to="/features"
+              className={`nav-link ${isActive('/features') ? 'active' : ''}`}
+            >
+              투표/알림
+            </Link>
+          </li>
         </ul>
 
         <div className="nav-cta">

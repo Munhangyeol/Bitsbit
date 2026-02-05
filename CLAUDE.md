@@ -17,12 +17,12 @@
   - `coinGeckoService.js` - CoinGecko API에서 실시간 가격 조회
   - `cryptoPanicService.js` - CryptoPanic API에서 뉴스 조회, 5분마다 자동 갱신
   - `sentimentService.js` - **핵심 비즈니스 로직** - 키워드 기반 감성 분석 및 트렌드 계산
-- **데이터 모델:** `newsModel.js`와 `trendModel.js`가 SQLite CRUD 작업 처리
-- **라우트:** 가격, 뉴스, 트렌드를 위한 RESTful API 엔드포인트
+- **데이터 모델:** `newsModel.js`, `trendModel.js`, `predictionModel.js`, `alertModel.js`가 SQLite CRUD 작업 처리
+- **라우트:** 가격, 뉴스, 트렌드, 예측 투표, 알림을 위한 RESTful API 엔드포인트
 
 ### 프론트엔드 (React)
 - **메인 컨테이너:** `Dashboard.js` - 상태 관리 및 자동 갱신 로직 (가격은 30초마다)
-- **컴포넌트:** `PriceCard.js`, `TrendIndicator.js`, `NewsFeed.js`
+- **컴포넌트:** `PriceCard.js`, `TrendIndicator.js`, `NewsFeed.js`, `VotingCard.js`, `PriceAlert.js`
 - **API 클라이언트:** `services/api.js` - Axios 기반 백엔드 통신
 
 ## 데이터베이스 스키마
@@ -56,12 +56,49 @@ CREATE TABLE trends (
 );
 ```
 
+### predictions 테이블 (가격 예측 투표)
+```sql
+CREATE TABLE predictions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    coin TEXT NOT NULL,                    -- bitcoin/ethereum/solana
+    direction TEXT NOT NULL,               -- UP/DOWN
+    session_id TEXT NOT NULL,              -- 브라우저 세션 ID
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### alerts 테이블 (가격 알림)
+```sql
+CREATE TABLE alerts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    coin TEXT NOT NULL,                    -- bitcoin/ethereum/solana
+    target_price REAL NOT NULL,            -- 목표 가격
+    direction TEXT NOT NULL,               -- ABOVE/BELOW
+    session_id TEXT NOT NULL,              -- 브라우저 세션 ID
+    triggered INTEGER DEFAULT 0,           -- 트리거 여부 (0/1)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ## API 엔드포인트
 
+### 기본 API
 - `GET /api/prices` - BTC, ETH, SOL의 현재 가격 및 24시간 변동률 반환
 - `GET /api/news?coin={btc|eth|sol}&limit=10` - 감성 분석이 포함된 캐시된 뉴스 반환
 - `GET /api/trends` - 각 코인의 최신 트렌드 분석(UP/DOWN/NEUTRAL) 반환
 - `POST /api/news/refresh` - 수동 뉴스 갱신 (자동 갱신은 5분마다 실행)
+
+### 가격 예측 투표 API
+- `GET /api/predictions` - 모든 코인의 투표 통계 반환
+- `GET /api/predictions/:coin` - 특정 코인의 투표 통계 반환
+- `POST /api/predictions` - 투표 생성 (body: coin, direction, session_id)
+- `GET /api/predictions/check/:coin/:session_id` - 세션별 투표 여부 확인
+
+### 가격 알림 API
+- `GET /api/alerts/:session_id` - 세션별 알림 목록 반환
+- `GET /api/alerts/check/:session_id` - 트리거된 알림 확인
+- `POST /api/alerts` - 알림 생성 (body: coin, target_price, direction, session_id)
+- `DELETE /api/alerts/:id` - 알림 삭제 (body: session_id)
 
 ## 개발 명령어
 
@@ -180,12 +217,31 @@ curl -X POST http://localhost:5000/api/news/refresh
 - 뉴스 상세 페이지 (외부 링크만 제공)
 - 캐싱 최적화 (인메모리로 충분)
 
+## 구현된 확장 기능
+
+### 1. 가격 예측 투표 시스템
+- **기능:** 사용자가 각 코인의 24시간 가격 방향(상승/하락)을 투표
+- **특징:**
+  - 세션 기반 중복 투표 방지 (24시간 내 1회)
+  - 실시간 투표 통계 시각화 (퍼센트 바)
+  - 투표 결과 집계 및 표시
+- **파일:** `predictionModel.js`, `predictions.js`, `VotingCard.js`
+
+### 2. 가격 알림 설정
+- **기능:** 특정 코인이 목표 가격에 도달하면 알림 표시
+- **특징:**
+  - 목표 가격 이상/이하 조건 설정
+  - 가격 갱신 시 자동 알림 체크
+  - 알림 생성/삭제 관리
+  - 트리거된 알림 팝업 표시
+- **파일:** `alertModel.js`, `alerts.js`, `PriceAlert.js`
+
 ## 향후 확장 가능성
 
 현재 아키텍처는 다음 기능 추가를 지원합니다:
 - 사용자 인증 (JWT + users 테이블)
 - 커뮤니티 게시판 (comments 테이블)
-- 가격 예측 투표 (predictions 테이블)
-- 실시간 알림 (WebSocket 통합)
+- WebSocket 실시간 푸시 알림
+- 포트폴리오 트래킹
 
 현재 설계는 프론트엔드/백엔드 분리, RESTful API 구조, 서비스 레이어 분리를 통해 이러한 확장을 용이하게 합니다.

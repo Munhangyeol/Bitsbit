@@ -122,7 +122,9 @@
 /* 섹션 - Spacious */
 .price-section,
 .trend-section,
-.news-section {
+.news-section,
+.voting-section,
+.alert-section {
   margin-bottom: var(--spacing-xl);
 }
 
@@ -168,6 +170,12 @@
 }
 
 .trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.voting-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-md);
@@ -241,7 +249,8 @@
   }
 
   .price-grid,
-  .trend-grid {
+  .trend-grid,
+  .voting-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-sm);
   }

@@ -1,0 +1,264 @@
+.price-alert {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.alert-header h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.add-alert-btn {
+  background: rgba(100, 100, 255, 0.2);
+  color: #a5a5ff;
+  border: 1px solid rgba(100, 100, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.add-alert-btn:hover {
+  background: rgba(100, 100, 255, 0.3);
+}
+
+/* 트리거된 알림 */
+.triggered-alerts {
+  margin-bottom: 16px;
+}
+
+.triggered-alert {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.triggered-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.triggered-icon {
+  font-size: 1.5rem;
+}
+
+.triggered-info {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.triggered-info strong {
+  color: #ffd700;
+}
+
+.current-price {
+  display: block;
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.dismiss-btn {
+  background: rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.dismiss-btn:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+/* 알림 폼 */
+.alert-form {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form-row:last-of-type {
+  margin-bottom: 0;
+}
+
+.alert-form select {
+  flex: 1;
+  background: #2a2a3e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.price-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #2a2a3e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0 12px;
+}
+
+.currency-symbol {
+  color: #888;
+  margin-right: 8px;
+}
+
+.price-input-wrapper input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 0;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.price-input-wrapper input::placeholder {
+  color: #666;
+}
+
+.current-hint {
+  color: #888;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 알림 목록 */
+.alert-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.no-alerts {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-size: 0.9rem;
+}
+
+.alert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.alert-item:last-child {
+  margin-bottom: 0;
+}
+
+.alert-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-direction {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.alert-direction.above {
+  background: rgba(0, 200, 83, 0.2);
+  color: #69f0ae;
+}
+
+.alert-direction.below {
+  background: rgba(255, 82, 82, 0.2);
+  color: #ff867c;
+}
+
+.alert-coin {
+  color: #fff;
+  font-weight: 600;
+}
+
+.alert-target {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.delete-btn {
+  background: rgba(255, 82, 82, 0.2);
+  color: #ff867c;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 82, 82, 0.4);
+}

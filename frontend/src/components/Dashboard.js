@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import api from '../services/api';
 import PriceCard from './PriceCard';
 import TrendIndicator from './TrendIndicator';
 import NewsFeed from './NewsFeed';
+import VotingCard from './VotingCard';
+import PriceAlert from './PriceAlert';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -11,6 +13,16 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+
+  // 세션 ID 생성 (브라우저별 고유)
+  const sessionId = useMemo(() => {
+    let id = localStorage.getItem('crypto_session_id');
+    if (!id) {
+      id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('crypto_session_id', id);
+    }
+    return id;
+  }, []);
 
   const fetchPrices = async () => {
     try {
@@ -140,6 +152,31 @@ function Dashboard() {
             />
           ))}
         </div>
+      </section>
+
+      <section className="voting-section">
+        <div className="section-header">
+          <h2>가격 예측 투표</h2>
+          <span className="section-subtitle">커뮤니티 예측</span>
+        </div>
+        <div className="voting-grid">
+          {prices.map(coin => (
+            <VotingCard
+              key={coin.id}
+              coin={coin.id}
+              coinName={coin.name}
+              sessionId={sessionId}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="alert-section">
+        <div className="section-header">
+          <h2>가격 알림</h2>
+          <span className="section-subtitle">목표 가격 도달 시 알림</span>
+        </div>
+        <PriceAlert sessionId={sessionId} currentPrices={prices} />
       </section>
 
       <section className="news-section">

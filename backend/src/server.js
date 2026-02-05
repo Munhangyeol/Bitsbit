@@ -7,6 +7,8 @@ const db = require('./config/database');
 const pricesRouter = require('./routes/prices');
 const newsRouter = require('./routes/news');
 const trendsRouter = require('./routes/trends');
+const predictionsRouter = require('./routes/predictions');
+const alertsRouter = require('./routes/alerts');
 
 const cryptoPanicService = require('./services/cryptoPanicService');
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use('/api/prices', pricesRouter);
 app.use('/api/news', newsRouter);
 app.use('/api/trends', trendsRouter);
+app.use('/api/predictions', predictionsRouter);
+app.use('/api/alerts', alertsRouter);
 
 app.get('/', (req, res) => {
   res.json({
@@ -26,7 +30,12 @@ app.get('/', (req, res) => {
       prices: '/api/prices',
       news: '/api/news?coin=btc&limit=10',
       trends: '/api/trends',
-      refreshNews: 'POST /api/news/refresh'
+      refreshNews: 'POST /api/news/refresh',
+      predictions: '/api/predictions',
+      createPrediction: 'POST /api/predictions',
+      alerts: '/api/alerts/:session_id',
+      createAlert: 'POST /api/alerts',
+      checkAlerts: '/api/alerts/check/:session_id'
     }
   });
 });

@@ -54,6 +54,42 @@ function initializeDatabase() {
         console.log('Trends table initialized');
       }
     });
+
+    // Create predictions table (가격 예측 투표)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS predictions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        coin TEXT NOT NULL,
+        direction TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `, (err) => {
+      if (err) {
+        console.error('Error creating predictions table:', err.message);
+      } else {
+        console.log('Predictions table initialized');
+      }
+    });
+
+    // Create alerts table (가격 알림)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS alerts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        coin TEXT NOT NULL,
+        target_price REAL NOT NULL,
+        direction TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        triggered INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `, (err) => {
+      if (err) {
+        console.error('Error creating alerts table:', err.message);
+      } else {
+        console.log('Alerts table initialized');
+      }
+    });
   });
 }
 
