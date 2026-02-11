@@ -55,6 +55,35 @@
   --spacing-xl: 64px;
 }
 
+/* Dark Mode Variables */
+body.dark-mode {
+  --bg-primary: #1F2937;
+  --bg-secondary: #111827;
+  --bg-tertiary: #374151;
+  --bg-hover: #374151;
+
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  --text-tertiary: #9CA3AF;
+  --text-muted: #6B7280;
+
+  --color-primary: #60A5FA;
+  --color-primary-light: #93C5FD;
+  --color-primary-lighter: rgba(96, 165, 250, 0.15);
+  --color-primary-dark: #3B82F6;
+
+  --border-color: #374151;
+  --border-color-light: #2D3748;
+  --border-color-dark: #4B5563;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+  background: #111827;
+  color: #F9FAFB;
+}
+
 body {
   margin: 0;
   font-family: var(--font-primary);
@@ -65,6 +94,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Typography - Clean & Simple */

@@ -39,9 +39,9 @@ function NewsFeed() {
 
   const getSentimentConfig = (sentiment) => {
     const configs = {
-      positive: { icon: '😊', color: 'success', label: '긍정' },
-      negative: { icon: '😟', color: 'danger', label: '부정' },
-      neutral: { icon: '😐', color: 'neutral', label: '중립' },
+      positive: { icon: '▲', color: 'success', label: '긍정' },
+      negative: { icon: '▼', color: 'danger', label: '부정' },
+      neutral: { icon: '−', color: 'neutral', label: '중립' },
     };
     return configs[sentiment] || configs.neutral;
   };
@@ -139,10 +139,10 @@ function NewsFeed() {
             return (
               <article key={item.id} className="news-item">
                 <div className="news-item-header">
+                  <span className="news-date">🕐 {formatDate(item.published_at)}</span>
                   <span className={`sentiment-badge sentiment-${sentimentConfig.color}`}>
-                    <span role="img" aria-label={sentimentConfig.label}>{sentimentConfig.icon}</span> {sentimentConfig.label}
+                    {sentimentConfig.icon} {sentimentConfig.label}
                   </span>
-                  <span className="news-date">{formatDate(item.published_at)}</span>
                 </div>
 
                 <h3 className="news-title">

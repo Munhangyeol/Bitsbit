@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navigation.css';
 
 function Navigation() {
   const location = useLocation();
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('crypto_dark_mode') === 'true';
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    setIsDark(prev => {
+      localStorage.setItem('crypto_dark_mode', String(!prev));
+      return !prev;
+    });
+  };
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -13,6 +31,7 @@ function Navigation() {
     <nav className="navigation">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
+          <div className="logo-icon">📈</div>
           <span className="logo-text">Bitsbit</span>
         </Link>
 
@@ -60,6 +79,14 @@ function Navigation() {
         </ul>
 
         <div className="nav-cta">
+          <button
+            onClick={toggleDarkMode}
+            className="btn-theme-toggle"
+            title={isDark ? '라이트 모드' : '다크 모드'}
+            aria-label="테마 전환"
+          >
+            {isDark ? '☀' : '🌙'}
+          </button>
           <Link to="/prices" className="btn-primary">
             시작하기
           </Link>

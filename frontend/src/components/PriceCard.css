@@ -1,94 +1,129 @@
-/* 🎨 Minimal Price Card - White, Gray, Light Blue Only */
+/* Price Card - Main Dashboard Style */
 .price-card {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .price-card:hover {
+    transform: scale(1.03);
     box-shadow: var(--shadow-md);
-    transform: translateY(-4px);
     border-color: var(--color-primary-light);
   }
 }
 
-/* Header Section */
+/* Header: coin info + change badge */
 .price-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: var(--spacing-md);
 }
 
-.price-card-header h3 {
-  font-size: clamp(18px, 3vw, 20px);
+.coin-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Gradient avatar circle */
+.coin-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.avatar-btc {
+  background: linear-gradient(135deg, #F59E0B, #EAB308);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+}
+
+.avatar-eth {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.avatar-sol {
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.avatar-default {
+  background: linear-gradient(135deg, #6B7280, #9CA3AF);
+}
+
+.coin-name-group h3 {
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text-primary);
+  margin-bottom: 2px;
 }
 
 .symbol {
-  font-size: clamp(12px, 2vw, 13px);
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--text-secondary);
-  background: var(--bg-secondary);
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--border-color-light);
 }
 
-/* Body Section */
+/* Change badge */
+.change-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.change-badge.positive {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.change-badge.negative {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+/* Dark mode badge colors */
+body.dark-mode .change-badge.positive {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34D399;
+}
+
+body.dark-mode .change-badge.negative {
+  background: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+}
+
+/* Price */
 .price-card-body {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .price {
-  font-size: clamp(28px, 5vw, 32px);
+  font-size: clamp(26px, 4vw, 32px);
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
-.change {
-  font-size: clamp(14px, 2.5vw, 16px);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  transition: all 0.2s ease;
-}
-
-.change.positive {
-  background: var(--color-primary-lighter);
-  color: var(--color-primary-dark);
-}
-
-.change.negative {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-}
-
-.change.positive::before {
-  content: '▲';
-  font-size: 12px;
-}
-
-.change.negative::before {
-  content: '▼';
-  font-size: 12px;
-}
-
-/* Footer Section */
+/* Footer: trend badge */
 .price-card-footer {
   padding-top: var(--spacing-sm);
   border-top: 1px solid var(--border-color-light);
@@ -97,27 +132,27 @@
 .trend {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
-  font-size: clamp(12px, 2vw, 13px);
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
   border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
 }
 
 .trend-up {
-  background: var(--color-primary-lighter);
-  color: var(--color-primary-dark);
-  border-color: var(--color-primary-light);
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .trend-down {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border-color: var(--border-color-dark);
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .trend-neutral {
@@ -126,23 +161,16 @@
   border-color: var(--border-color);
 }
 
-.trend:hover {
-  transform: scale(1.05);
+body.dark-mode .trend-up {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border-color: rgba(52, 211, 153, 0.3);
 }
 
-.trend-up:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
-.trend-down:hover {
-  background: var(--border-color-dark);
-  color: var(--text-primary);
-}
-
-.trend-neutral:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+body.dark-mode .trend-down {
+  background: rgba(239, 68, 68, 0.15);
+  color: #F87171;
+  border-color: rgba(248, 113, 113, 0.3);
 }
 
 /* 반응형 */
@@ -150,32 +178,18 @@
   .price-card {
     padding: var(--spacing-sm);
   }
-
   .price {
-    font-size: 28px;
+    font-size: 26px;
   }
-
-  .change {
-    font-size: 15px;
-  }
-
-  .price-card-header h3 {
-    font-size: 18px;
+  .coin-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .price {
-    font-size: 24px;
-  }
-
-  .change {
-    font-size: 14px;
-    padding: 4px 10px;
-  }
-
-  .symbol {
-    font-size: 11px;
-    padding: 4px 8px;
+    font-size: 22px;
   }
 }

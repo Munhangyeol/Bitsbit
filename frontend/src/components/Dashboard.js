@@ -13,6 +13,24 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('crypto_dark_mode') === 'true';
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    setIsDark(prev => {
+      localStorage.setItem('crypto_dark_mode', String(!prev));
+      return !prev;
+    });
+  };
 
   // 세션 ID 생성 (브라우저별 고유)
   const sessionId = useMemo(() => {
@@ -90,18 +108,39 @@ function Dashboard() {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
-          <div className="header-title">
-            <h1>암호화폐 가격 대시보드</h1>
-            <p>실시간 가격 및 트렌드 분석</p>
-          </div>
-          {lastUpdate && (
-            <div className="last-update">
-              <span className="update-indicator">●</span>
-              <span className="update-time">
-                최종 업데이트: {formatUpdateTime()}
-              </span>
+          <div className="header-left">
+            <div className="header-logo">
+              <span>📈</span>
             </div>
-          )}
+            <div className="header-title">
+              <h1>Crypto Dashboard</h1>
+              <p>실시간 암호화폐 트렌드 분석</p>
+            </div>
+          </div>
+          <div className="header-right">
+            {lastUpdate && (
+              <div className="last-update">
+                <span className="update-indicator"></span>
+                <span className="update-time">{formatUpdateTime()}</span>
+              </div>
+            )}
+            <button
+              onClick={fetchPrices}
+              className="header-btn"
+              title="새로고침"
+              aria-label="새로고침"
+            >
+              ↻
+            </button>
+            <button
+              onClick={toggleDarkMode}
+              className="header-btn"
+              title="테마 전환"
+              aria-label="테마 전환"
+            >
+              {isDark ? '☀' : '🌙'}
+            </button>
+          </div>
         </div>
       </header>
 
