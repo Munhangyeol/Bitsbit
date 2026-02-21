@@ -85,7 +85,6 @@ function TrendsPage() {
 
         {error && (
           <div className="error-banner">
-            <span>⚠️</span>
             <span>{error}</span>
             <button onClick={fetchTrends} className="retry-btn">
               재시도

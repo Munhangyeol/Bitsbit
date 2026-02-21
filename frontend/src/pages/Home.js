@@ -42,23 +42,62 @@ function Home() {
     <div className="home">
       {/* Hero Section */}
       <section className="hero">
+        {/* 동적 배경 요소들 */}
+        <div className="hero-bg" aria-hidden="true">
+          <div className="hero-blob hero-blob-1"></div>
+          <div className="hero-blob hero-blob-2"></div>
+          <div className="hero-blob hero-blob-3"></div>
+          <div className="hero-grid"></div>
+          <svg className="hero-chart" viewBox="0 0 1440 300" preserveAspectRatio="none">
+            <polyline
+              className="hero-chart-line"
+              points="0,280 120,240 220,260 320,200 420,220 520,160 620,180 720,110 820,140 920,90 1020,110 1150,60 1300,80 1440,30"
+            />
+            <polyline
+              className="hero-chart-line hero-chart-line-2"
+              points="0,295 100,275 200,285 300,255 400,265 500,225 600,240 700,185 800,205 900,160 1000,175 1130,130 1280,150 1440,100"
+            />
+          </svg>
+        </div>
+
         {/* 어두운 오버레이 */}
         <div className="hero-overlay" aria-hidden="true"></div>
 
+        {/* 떠다니는 시세 카드 */}
+        <div className="hero-ticker ticker-btc" aria-hidden="true">
+          <span className="ticker-symbol">BTC</span>
+          <span className="ticker-price">$104,200</span>
+          <span className="ticker-change positive">▲ 2.3%</span>
+        </div>
+        <div className="hero-ticker ticker-eth" aria-hidden="true">
+          <span className="ticker-symbol">ETH</span>
+          <span className="ticker-price">$3,850</span>
+          <span className="ticker-change positive">▲ 1.1%</span>
+        </div>
+        <div className="hero-ticker ticker-sol" aria-hidden="true">
+          <span className="ticker-symbol">SOL</span>
+          <span className="ticker-price">$185</span>
+          <span className="ticker-change negative">▼ 0.8%</span>
+        </div>
+
         {/* 콘텐츠 */}
         <div className="hero-content">
+          <div className="hero-live-badge">
+            <span className="live-dot"></span>
+            LIVE
+          </div>
           <h1 className="hero-title">
-            Real-Time Crypto
+            BTC · ETH · SOL
             <br />
-            Market Intelligence
+            <span className="hero-title-gradient">실시간 시세 &amp; 시장 분석</span>
           </h1>
           <p className="hero-description">
-            실시간 가격 추적, AI 기반 감성 분석을 통한 시장 트렌드 분석,
-            그리고 최신 암호화폐 뉴스까지 한 곳에서 모두 확인하세요.
+            30초마다 자동 갱신되는 실시간 가격, 뉴스 기반 감성 분석으로 상승·하락 신호를 한눈에 확인.
+            목표 가격 알림 설정으로 매수·매도 타이밍을 놓치지 마세요.
           </p>
           <div className="hero-actions">
             <Link to="/prices" className="btn-hero-primary">
-              지금 시작하기
+              실시간 가격 보기
             </Link>
             <Link to="/trends" className="btn-hero-secondary">
               시장 트렌드 보기

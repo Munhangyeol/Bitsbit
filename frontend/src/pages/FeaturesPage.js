@@ -1,64 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import api from '../services/api';
+import React from 'react';
 import VotingCard from '../components/VotingCard';
 import PriceAlert from '../components/PriceAlert';
+import { useAppContext } from '../context/AppContext';
 import './FeaturesPage.css';
 
 function FeaturesPage() {
-  const [prices, setPrices] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { prices, pricesLoading, sessionId } = useAppContext();
 
-  // 세션 ID 생성 (브라우저별 고유)
-  const sessionId = useMemo(() => {
-    let id = localStorage.getItem('crypto_session_id');
-    if (!id) {
-      id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('crypto_session_id', id);
-    }
-    return id;
-  }, []);
-
-  const fetchPrices = async () => {
-    try {
-      const response = await api.getPrices();
-      // 배열인지 확인, 아니면 객체를 배열로 변환
-      if (Array.isArray(response.data)) {
-        setPrices(response.data);
-      } else if (response.data && typeof response.data === 'object') {
-        // 객체를 배열로 변환 { bitcoin: {...}, ethereum: {...} } -> [{id: 'bitcoin', ...}, ...]
-        const pricesArray = Object.entries(response.data).map(([id, data]) => ({
-          id,
-          name: id.charAt(0).toUpperCase() + id.slice(1),
-          symbol: id === 'bitcoin' ? 'BTC' : id === 'ethereum' ? 'ETH' : 'SOL',
-          current_price: data.price,
-          price_change_percentage_24h: data.change_24h
-        }));
-        setPrices(pricesArray);
-      } else {
-        console.error('가격 데이터 형식 오류:', response.data);
-        setPrices([]);
-      }
-    } catch (err) {
-      console.error('가격 로드 오류:', err);
-      setPrices([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPrices();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchPrices();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading) {
+  if (pricesLoading) {
     return (
       <div className="features-loading">
         <div className="loading-spinner"></div>
@@ -83,7 +32,7 @@ function FeaturesPage() {
           24시간 후 코인 가격이 오를지 내릴지 예측해보세요. 하루에 코인당 1회 투표 가능합니다.
         </p>
         <div className="voting-grid">
-          {Array.isArray(prices) && prices.map(coin => (
+          {prices.map(coin => (
             <VotingCard
               key={coin.id}
               coin={coin.id}
@@ -111,7 +60,7 @@ function FeaturesPage() {
           <span className="section-badge live">Live</span>
         </div>
         <div className="prices-grid">
-          {Array.isArray(prices) && prices.map(coin => (
+          {prices.map(coin => (
             <div key={coin.id} className="price-item">
               <span className="coin-name">{coin.name}</span>
               <span className="coin-price">

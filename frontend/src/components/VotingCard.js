@@ -7,13 +7,16 @@ function VotingCard({ coin, coinName, sessionId }) {
   const [hasVoted, setHasVoted] = useState(false);
   const [userVote, setUserVote] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchStats = useCallback(async () => {
     try {
       const response = await api.getPredictionStats(coin);
       setStats(response.data);
+      setError(null);
     } catch (err) {
       console.error('투표 통계 로드 오류:', err);
+      setError('투표 통계를 불러오는데 실패했습니다.');
     }
   }, [coin]);
 
@@ -38,6 +41,7 @@ function VotingCard({ coin, coinName, sessionId }) {
     if (hasVoted || loading) return;
 
     setLoading(true);
+    setError(null);
     try {
       const response = await api.createPrediction({
         coin,
@@ -51,6 +55,8 @@ function VotingCard({ coin, coinName, sessionId }) {
       console.error('투표 오류:', err);
       if (err.response?.data?.error === 'Already voted for this coin today') {
         setHasVoted(true);
+      } else {
+        setError('투표 처리 중 오류가 발생했습니다.');
       }
     } finally {
       setLoading(false);
@@ -113,6 +119,13 @@ function VotingCard({ coin, coinName, sessionId }) {
       {hasVoted && (
         <div className="voting-message">
           {userVote === 'UP' ? '상승' : '하락'}에 투표하셨습니다
+        </div>
+      )}
+
+      {error && (
+        <div className="voting-error">
+          <span>{error}</span>
+          <button className="retry-link" onClick={fetchStats}>재시도</button>
         </div>
       )}
     </div>

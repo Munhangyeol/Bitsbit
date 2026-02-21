@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { COINGECKO_API_URL, SUPPORTED_COINS } = require('../config/constants');
+const priceHistoryModel = require('../models/priceHistoryModel');
 
 class CoinGeckoService {
   constructor() {
@@ -65,6 +66,18 @@ class CoinGeckoService {
       this.isFetching = false;
 
       console.log('[CoinGecko] Successfully fetched and cached new prices');
+
+      // 가격 이력 기록 (비동기, 오류가 메인 흐름에 영향 없도록 처리)
+      Promise.all(
+        Object.entries(formattedPrices).map(([coin, data]) =>
+          priceHistoryModel.record(coin, data.price, data.change_24h)
+        )
+      ).then(() => {
+        priceHistoryModel.deleteOld().catch(err =>
+          console.error('[PriceHistory] 오래된 데이터 삭제 오류:', err.message)
+        );
+      }).catch(err => console.error('[PriceHistory] 가격 기록 오류:', err.message));
+
       return formattedPrices;
     } catch (error) {
       this.isFetching = false;

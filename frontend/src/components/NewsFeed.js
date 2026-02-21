@@ -81,7 +81,6 @@ function NewsFeed() {
     return (
       <div className="news-feed">
         <div className="news-error" role="alert">
-          <span className="error-icon" role="img" aria-label="경고">⚠️</span>
           <p>{error}</p>
           <button onClick={fetchNews} className="retry-button" aria-label="뉴스 다시 불러오기">
             다시 시도
@@ -122,14 +121,13 @@ function NewsFeed() {
         </div>
 
         <button onClick={handleRefresh} className="refresh-button" aria-label="뉴스 새로고침">
-          <span role="img" aria-hidden="true">🔄</span> 새로고침
+          새로고침
         </button>
       </div>
 
       <div className="news-list">
         {news.length === 0 ? (
           <div className="news-empty">
-            <span className="empty-icon" role="img" aria-label="뉴스 없음">📰</span>
             <p>표시할 뉴스가 없습니다.</p>
           </div>
         ) : (
@@ -139,7 +137,7 @@ function NewsFeed() {
             return (
               <article key={item.id} className="news-item">
                 <div className="news-item-header">
-                  <span className="news-date">🕐 {formatDate(item.published_at)}</span>
+                  <span className="news-date">{formatDate(item.published_at)}</span>
                   <span className={`sentiment-badge sentiment-${sentimentConfig.color}`}>
                     {sentimentConfig.icon} {sentimentConfig.label}
                   </span>

@@ -650,3 +650,122 @@ CREATE TABLE trends (
 - 통합 테스트 및 버그 수정
 - 프로덕션 배포 준비
 - 문서화 보완
+
+---
+
+## 개선 및 신규 기능 추가 계획 (2026-02-21 분석)
+
+### 🐛 발견된 버그 (즉시 수정 필요)
+
+#### Bug 1: alerts.js - 라우트 순서 충돌
+- **파일:** `backend/src/routes/alerts.js`
+- **문제:** `GET /:session_id`가 `GET /check/:session_id`보다 먼저 정의 → `/check/` 엔드포인트가 데드 코드
+- **수정:** `GET /check/:session_id`를 먼저 선언
+
+#### Bug 2: alerts.js - 객체에 배열 메서드 사용 (크리티컬)
+- **파일:** `backend/src/routes/alerts.js` (32번째 줄)
+- **문제:** `prices.find(p => p.id === alert.coin)` → prices는 배열이 아닌 객체 → 알림 트리거 완전 불동작
+- **수정:** `prices[alert.coin]`으로 변경, `price.current_price` → `priceData.price`
+
+#### Bug 3: Dashboard.js - prices 타입 불일치
+- **파일:** `frontend/src/components/Dashboard.js`
+- **문제:** `useState([])` 초기화 후 API 응답 객체를 그대로 저장 → `prices.map()` 오류
+- **수정:** `fetchPrices()` 내에 객체→배열 변환 로직 추가 (PricesPage.js와 동일한 패턴)
+
+#### Bug 4: 다크모드 이중 관리
+- **파일:** `Navigation.js`, `Dashboard.js`
+- **문제:** 두 컴포넌트가 독립적 `isDark` state 관리 → 토글 버튼 엇갈림
+- **수정(임시):** Dashboard.js의 다크모드 관련 코드 제거, Navigation.js 단독 관리
+
+---
+
+### 🔧 단기 코드 개선 (1~2일)
+
+#### 개선 1: 가격 변환 유틸리티 중앙화
+- **신규:** `frontend/src/utils/coinUtils.js` - `COIN_META`, `formatPricesResponse()` 함수
+- **수정:** Dashboard.js, PricesPage.js, FeaturesPage.js - 중복 변환 로직 교체
+- **이유:** 동일 코드 3곳 중복, 코인 추가 시 다중 파일 수정 방지
+
+#### 개선 2: 커스텀 훅 추출
+- **신규:** `frontend/src/hooks/useSessionId.js` - 세션 ID 생성/관리 통합
+- **신규:** `frontend/src/hooks/useAutoRefresh.js` - setInterval 메모리 누수 방지
+- **수정:** Dashboard.js, FeaturesPage.js, PricesPage.js
+
+#### 개선 3: 백엔드 입력값 검증 미들웨어
+- **신규:** `backend/src/middleware/validate.js` - `validateCoin()`, `validateTargetPrice()`
+- **수정:** `backend/src/routes/alerts.js`, `predictions.js`
+
+#### 개선 4: 에러 처리 표준화
+- **수정:** `VotingCard.js`, `PriceAlert.js`, `NewsFeed.js`
+- **내용:** 에러 시 인라인 메시지 + 재시도 버튼 표시 (현재 console.error만)
+
+---
+
+### ✨ 중기 신규 기능 (3~7일)
+
+#### 기능 1: 가격 차트 (Recharts 시계열 그래프)
+- **백엔드:**
+  - `database.js` - `price_history` 테이블 추가 (coin, price, recorded_at 인덱스 포함)
+  - `coinGeckoService.js` - 가격 fetch 시 DB 기록 (30일 이상 자동 삭제)
+  - 신규: `models/priceHistoryModel.js`, `routes/priceHistory.js`
+  - API: `GET /api/prices/history?coin=bitcoin&range=1d|7d|30d`
+- **프론트엔드:**
+  - `npm install recharts`
+  - 신규: `components/PriceChart.js` - LineChart, 범위 선택(1D/7D/30D)
+  - `pages/PricesPage.js` - PriceChart 컴포넌트 통합
+  - `services/api.js` - `getPriceHistory()` 추가
+
+#### 기능 2: Context API 전역 상태 관리
+- **신규:** `context/ThemeContext.js` - 다크모드 전역 관리 (Bug 4 근본 해결)
+- **신규:** `context/AppContext.js` - prices, trends, sessionId 전역 관리 (중복 fetch 제거)
+- **수정:** `App.js` - Provider로 감싸기, 모든 페이지 컴포넌트에서 context 소비
+
+#### 기능 3: 지원 코인 확장 (ADA, AVAX, DOGE)
+- **수정:** `backend/src/config/constants.js` - SUPPORTED_COINS에 cardano, avalanche-2, dogecoin 추가
+- **수정:** `PriceAlert.js`, `NewsFeed.js` (하드코딩된 코인 목록 → 동적 렌더링)
+- **수정:** `PriceCard.js` (그래디언트 색상 동적 처리)
+
+#### 기능 4: 감성 분석 알고리즘 개선
+- **수정:** `backend/src/utils/keywords.js` - ETF, halving, fork, defi, nft 등 도메인 키워드 추가
+- **수정:** `backend/src/services/sentimentService.js`
+  - 단어 경계 매칭 (`\bsurge\b` → "resurgence"와 구분)
+  - 부정어(not/no/never) 처리로 역방향 키워드 감지
+
+---
+
+### 🚀 장기 신규 기능 (1주일 이상)
+
+#### 기능 1: 포트폴리오 추적
+- **DB:** `portfolio` 테이블 (session_id, coin, amount, purchase_price)
+- **백엔드:** `portfolioModel.js`, `portfolio.js` 라우트
+- **프론트엔드:** `Portfolio.js` 컴포넌트, `PortfolioPage.js` (Recharts PieChart 포함)
+- **API:** `GET/POST/DELETE /api/portfolio/:session_id`
+
+#### 기능 2: WebSocket 실시간 통신
+- **백엔드:** `npm install ws`, `websocket/wsServer.js` - 가격 업데이트 즉시 브로드캐스트
+- **프론트엔드:** `hooks/usePriceWebSocket.js` - 30초 polling → WebSocket 수신으로 교체
+
+#### 기능 3: 사용자 인증 (JWT)
+- **백엔드:** `npm install jsonwebtoken bcryptjs`, `users` 테이블, `auth.js` 라우트, `auth.js` 미들웨어
+- **프론트엔드:** `AuthContext.js`, `LoginPage.js`, API 헤더에 Bearer 토큰 추가
+
+---
+
+### 📋 구현 우선순위
+
+| 순서 | 항목 | 핵심 파일 | 소요 |
+|------|------|-----------|------|
+| 1 | Bug 1+2: alerts.js 수정 | `backend/src/routes/alerts.js` | 10분 |
+| 2 | Bug 3: Dashboard 변환 | `frontend/src/components/Dashboard.js` | 15분 |
+| 3 | Bug 4: 다크모드 통합 | `Navigation.js`, `Dashboard.js` | 10분 |
+| 4 | 개선 1: coinUtils | `frontend/src/utils/coinUtils.js` | 2~3시간 |
+| 5 | 개선 2: 커스텀 훅 | `useSessionId.js`, `useAutoRefresh.js` | 2시간 |
+| 6 | 개선 3: 검증 미들웨어 | `backend/src/middleware/validate.js` | 2시간 |
+| 7 | 개선 4: 에러 처리 | `VotingCard.js`, `PriceAlert.js` | 3시간 |
+| 8 | 기능 C-2: Context API | `context/*.js` + 전체 페이지 수정 | 2~3일 |
+| 9 | 기능 C-4: 감성 분석 개선 | `keywords.js`, `sentimentService.js` | 1~2일 |
+| 10 | 기능 C-3: 코인 확장 | `constants.js` + 프론트 4개 파일 | 2일 |
+| 11 | 기능 C-1: 가격 차트 | 백엔드 3개 + 프론트 3개 파일 | 3~4일 |
+| 12 | 기능 D-1: 포트폴리오 | 백엔드 3개 + 프론트 3개 파일 | 7~10일 |
+| 13 | 기능 D-2: WebSocket | `wsServer.js` + 훅 교체 | 5~7일 |
+| 14 | 기능 D-3: 사용자 인증 | 백엔드+프론트 전반 | 2주+ |

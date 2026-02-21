@@ -90,6 +90,28 @@ function initializeDatabase() {
         console.log('Alerts table initialized');
       }
     });
+
+    // Create price_history table (가격 이력)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS price_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        coin TEXT NOT NULL,
+        price REAL NOT NULL,
+        change_24h REAL,
+        recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `, (err) => {
+      if (err) {
+        console.error('Error creating price_history table:', err.message);
+      } else {
+        console.log('Price history table initialized');
+      }
+    });
+
+    db.run(
+      `CREATE INDEX IF NOT EXISTS idx_price_history ON price_history(coin, recorded_at)`,
+      (err) => { if (err) console.error('Error creating price_history index:', err.message); }
+    );
   });
 }
 

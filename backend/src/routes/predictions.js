@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const predictionModel = require('../models/predictionModel');
+const { validateCoin } = require('../middleware/validate');
 
 // 모든 코인의 투표 통계 조회
 router.get('/', async (req, res) => {
@@ -13,8 +14,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// 세션의 투표 확인 (/:coin보다 먼저 선언해야 라우트 충돌 방지)
+router.get('/check/:coin/:session_id', async (req, res) => {
+  try {
+    const { coin, session_id } = req.params;
+    const vote = await predictionModel.findBySession(coin, session_id);
+    res.json({ hasVoted: !!vote, vote });
+  } catch (error) {
+    console.error('Error in GET /api/predictions/check:', error.message);
+    res.status(500).json({ error: 'Failed to check vote status' });
+  }
+});
+
 // 특정 코인의 투표 통계 조회
-router.get('/:coin', async (req, res) => {
+router.get('/:coin', validateCoin('params'), async (req, res) => {
   try {
     const { coin } = req.params;
     const stats = await predictionModel.getStats(coin);
@@ -26,11 +39,11 @@ router.get('/:coin', async (req, res) => {
 });
 
 // 투표하기
-router.post('/', async (req, res) => {
+router.post('/', validateCoin('body'), async (req, res) => {
   try {
     const { coin, direction, session_id } = req.body;
 
-    if (!coin || !direction || !session_id) {
+    if (!direction || !session_id) {
       return res.status(400).json({ error: 'coin, direction, session_id are required' });
     }
 
@@ -58,18 +71,6 @@ router.post('/', async (req, res) => {
   } catch (error) {
     console.error('Error in POST /api/predictions:', error.message);
     res.status(500).json({ error: 'Failed to record vote' });
-  }
-});
-
-// 세션의 투표 확인
-router.get('/check/:coin/:session_id', async (req, res) => {
-  try {
-    const { coin, session_id } = req.params;
-    const vote = await predictionModel.findBySession(coin, session_id);
-    res.json({ hasVoted: !!vote, vote });
-  } catch (error) {
-    console.error('Error in GET /api/predictions/check:', error.message);
-    res.status(500).json({ error: 'Failed to check vote status' });
   }
 });
 

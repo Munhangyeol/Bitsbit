@@ -1,90 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import api from '../services/api';
+import React, { useState, useEffect } from 'react';
 import PriceCard from './PriceCard';
 import TrendIndicator from './TrendIndicator';
 import NewsFeed from './NewsFeed';
 import VotingCard from './VotingCard';
 import PriceAlert from './PriceAlert';
+import { useAppContext } from '../context/AppContext';
 import './Dashboard.css';
 
 function Dashboard() {
-  const [prices, setPrices] = useState([]);
-  const [trends, setTrends] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { prices, trends, pricesLoading, sessionId, fetchPrices } = useAppContext();
   const [lastUpdate, setLastUpdate] = useState(null);
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('crypto_dark_mode') === 'true';
-  });
+  const [error, setError] = useState(null);
 
+  // lastUpdate 갱신: prices가 업데이트될 때마다 기록
   useEffect(() => {
-    if (isDark) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [isDark]);
-
-  const toggleDarkMode = () => {
-    setIsDark(prev => {
-      localStorage.setItem('crypto_dark_mode', String(!prev));
-      return !prev;
-    });
-  };
-
-  // 세션 ID 생성 (브라우저별 고유)
-  const sessionId = useMemo(() => {
-    let id = localStorage.getItem('crypto_session_id');
-    if (!id) {
-      id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('crypto_session_id', id);
-    }
-    return id;
-  }, []);
-
-  const fetchPrices = async () => {
-    try {
-      const response = await api.getPrices();
-      setPrices(response.data);
+    if (prices.length > 0) {
       setLastUpdate(new Date());
       setError(null);
-    } catch (err) {
-      setError('가격 정보를 불러오는데 실패했습니다.');
-      console.error('가격 로드 오류:', err);
     }
-  };
+  }, [prices]);
 
-  const fetchTrends = async () => {
+  const handleRefresh = async () => {
     try {
-      const response = await api.getTrends();
-      const trendsMap = {};
-      response.data.forEach(t => {
-        trendsMap[t.coin] = t;
-      });
-      setTrends(trendsMap);
-    } catch (err) {
-      console.error('트렌드 로드 오류:', err);
+      await fetchPrices();
+    } catch {
+      setError('가격 정보를 불러오는데 실패했습니다.');
     }
   };
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await Promise.all([fetchPrices(), fetchTrends()]);
-      setLoading(false);
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchPrices();
-      fetchTrends();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const formatUpdateTime = () => {
     if (!lastUpdate) return '';
@@ -95,7 +37,7 @@ function Dashboard() {
     });
   };
 
-  if (loading) {
+  if (pricesLoading) {
     return (
       <div className="dashboard-loading" role="status" aria-live="polite">
         <div className="loading-spinner" aria-hidden="true"></div>
@@ -109,9 +51,6 @@ function Dashboard() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
-            <div className="header-logo">
-              <span>📈</span>
-            </div>
             <div className="header-title">
               <h1>Crypto Dashboard</h1>
               <p>실시간 암호화폐 트렌드 분석</p>
@@ -125,20 +64,12 @@ function Dashboard() {
               </div>
             )}
             <button
-              onClick={fetchPrices}
+              onClick={handleRefresh}
               className="header-btn"
               title="새로고침"
               aria-label="새로고침"
             >
               ↻
-            </button>
-            <button
-              onClick={toggleDarkMode}
-              className="header-btn"
-              title="테마 전환"
-              aria-label="테마 전환"
-            >
-              {isDark ? '☀' : '🌙'}
             </button>
           </div>
         </div>
@@ -146,9 +77,8 @@ function Dashboard() {
 
       {error && (
         <div className="error-banner">
-          <span className="error-icon">⚠️</span>
           <span>{error}</span>
-          <button onClick={fetchPrices} className="error-retry">
+          <button onClick={handleRefresh} className="error-retry">
             재시도
           </button>
         </div>

@@ -19,7 +19,26 @@
       "Bash(git init:*)",
       "Bash(gh auth status:*)",
       "Bash(gh repo create:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(cmd /c \"tasklist /FI \"\"PID eq 7624\"\"\")",
+      "Bash(cmd /c \"for /f \"\"tokens=5\"\" %a in \\(''netstat -ano ^| findstr :3000''\\) do taskkill /PID %a /F\")",
+      "Bash(cmd /c taskkill /PID 7624 /F)",
+      "Bash(powershell:*)",
+      "Bash(set:*)",
+      "Bash(cmd /c \"cd C:\\\\claude-code\\\\Bitsbit\\\\frontend && set PORT=3001 && npm start\")",
+      "Bash(cmd /c \"C:\\\\claude-code\\\\Bitsbit\\\\start_frontend.bat\")",
+      "Bash(PORT=3001 npm start:*)",
+      "Bash(BROWSER=none PORT=3001 npm start:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(head:*)",
+      "Bash(taskkill:*)",
+      "Bash(grep 3000:*)"
     ]
   }
 }

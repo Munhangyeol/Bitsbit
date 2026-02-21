@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
     message: 'Crypto Dashboard API',
     endpoints: {
       prices: '/api/prices',
+      priceHistory: '/api/prices/history?coin=bitcoin&range=1d',
       news: '/api/news?coin=btc&limit=10',
       trends: '/api/trends',
       refreshNews: 'POST /api/news/refresh',

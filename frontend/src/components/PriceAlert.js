@@ -18,6 +18,7 @@ function PriceAlert({ sessionId, currentPrices }) {
     direction: 'ABOVE'
   });
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState(null);
 
   const fetchAlerts = useCallback(async () => {
     try {
@@ -55,6 +56,7 @@ function PriceAlert({ sessionId, currentPrices }) {
     if (!formData.target_price || loading) return;
 
     setLoading(true);
+    setFormError(null);
     try {
       await api.createAlert({
         ...formData,
@@ -66,6 +68,7 @@ function PriceAlert({ sessionId, currentPrices }) {
       fetchAlerts();
     } catch (err) {
       console.error('알림 생성 오류:', err);
+      setFormError(err.response?.data?.error || '알림 생성 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -111,7 +114,7 @@ function PriceAlert({ sessionId, currentPrices }) {
             <div key={alert.id} className="triggered-alert">
               <div className="triggered-content">
                 <span className="triggered-icon">
-                  {alert.direction === 'ABOVE' ? '🚀' : '📉'}
+                  {alert.direction === 'ABOVE' ? '▲' : '▼'}
                 </span>
                 <div className="triggered-info">
                   <strong>{getCoinName(alert.coin)}</strong>이(가)
@@ -181,6 +184,10 @@ function PriceAlert({ sessionId, currentPrices }) {
               </span>
             )}
           </div>
+
+          {formError && (
+            <div className="form-error">{formError}</div>
+          )}
 
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? '생성 중...' : '알림 설정'}

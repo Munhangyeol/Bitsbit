@@ -13,6 +13,10 @@ const api = axios.create({
 // 가격 조회
 export const getPrices = () => api.get('/prices');
 
+// 가격 이력 조회 (range: '1d' | '7d' | '30d')
+export const getPriceHistory = (coin, range = '1d') =>
+  api.get('/prices/history', { params: { coin, range } });
+
 // 뉴스 조회
 export const getNews = (coin = 'btc', limit = 10) =>
   api.get('/news', { params: { coin, limit } });
@@ -37,6 +41,7 @@ export const deleteAlert = (id, session_id) => api.delete(`/alerts/${id}`, { dat
 
 const apiClient = {
   getPrices,
+  getPriceHistory,
   getNews,
   getTrends,
   refreshNews,
